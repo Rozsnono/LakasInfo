@@ -151,7 +151,7 @@ export default function Dashboard() {
                     </Button>
                 </Link>
 
-                <Link href={"/payments"} className="w-full">
+                <Link href={"/payments?homeId=" + home._id} className="w-full">
                     <Button className="px-8 py-6 w-full border border-gray-400/80 bg-gray-500/50 hover:bg-gray-500/80 cursor-pointer flex items-center justify-center gap-2">
                         <div className="flex gap-2 items-center text-white">
                             <Wallet size={16} className="" color="currentColor" strokeColor="none" strokeWidth={0} />
