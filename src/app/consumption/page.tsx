@@ -129,7 +129,7 @@ export default function Consumption() {
                                         <div className={`w-6 h-8 rounded-lg duration-200 ${types.find((f) => selectedType === f.value)?.colors.main}`}></div>
                                         <span className="text-gray-100 text-xl">{months[new Date(month).getMonth()]}</span>
                                         <div className="w-fit p-1 px-3 bg-gray-500/40 rounded-full">
-                                            <span className="text-gray-200">{data.data[month].difference} kWh</span>
+                                            <span className="text-gray-200 lg:text-md text-xs">{data.data[month].difference} kWh</span>
                                         </div>
                                     </div>
 
