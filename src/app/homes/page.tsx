@@ -3,7 +3,7 @@ import { Add, Home, Pin } from "@/components/icons/Icons";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import Link from "next/link";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import Loading from "../loading";
 import { useContext, useEffect, useState } from "react";
 import { HomeContext } from "@/providers/homes.provider";
@@ -11,12 +11,15 @@ import { services } from "@/lib/services";
 
 export default function HomesPage() {
 
-    const { data, isLoading, error } = useQuery('homesPage', async () => {
-        const res = await fetch('/api/house');
-        if (!res.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return res.json();
+    const { data, isLoading, error } = useQuery({
+        queryKey: ['homes'],
+        queryFn: async () => {
+            const res = await fetch('/api/house');
+            if (!res.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return res.json();
+        },
     });
 
     const { selectedHome, setSelectedHome } = useContext(HomeContext);
@@ -32,7 +35,7 @@ export default function HomesPage() {
         return <Loading />;
     }
 
-    
+
 
     return (
         <div className="flex flex-col lg:max-w-7xl w-full gap-5">
@@ -57,7 +60,7 @@ export default function HomesPage() {
 
                 {
                     data.map((home: any) => (
-                        <Card onClick={() => setSelectedHome!(home)} key={home._id} className={`border-gray-400/10 bg-gray-500/5 w-full flex flex-col items-center lg:p-6 w-fit ${selectedHome?._id === home._id ? 'border-green-500/60 border-2 bg-gray-500/30' : ''}`}>
+                        <Card onClick={() => setSelectedHome!(home)} key={home._id} className={`border-gray-400/10 bg-gray-500/5 w-full flex flex-col items-center lg:p-6 w-fit ${selectedHome?._id === home._id ? 'border-green-500/60 border-2 bg-gray-500/30' : 'cursor-pointer hover:bg-gray-500/10'}`}>
                             <div className="flex flex-col w-full gap-3">
                                 <div className="flex justify-between w-full items-center">
                                     <Home size={24} className="" color="currentColor" strokeColor="none" strokeWidth={0} />

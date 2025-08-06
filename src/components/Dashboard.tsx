@@ -6,28 +6,37 @@ import Button from "./ui/Button";
 import Card from "./ui/Card";
 import DonutChart from "./ui/DonutChart";
 import Dropdown from "./ui/Dropdown";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useContext, useEffect, useState } from "react";
 import { HomeContext } from "@/providers/homes.provider";
 import Loading from "@/app/loading";
 import { services } from "@/lib/services";
+import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
 
-    const data = useQuery('homePage-Houses', async () => {
-        const res = await fetch('/api/house');
-        if (!res.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return res.json();
+    const route = useRouter();
+
+    const data = useQuery({
+        queryKey: ['homePage-Houses'],
+        queryFn: async () => {
+            const res = await fetch('/api/house');
+            if (!res.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return res.json();
+        },
     });
 
-    const { data: serviceData, isLoading, isError, error: serviceError, refetch } = useQuery('homePage-Services', async () => {
-        const res = await fetch('/api/home?homeId=' + (selectedHome?._id || ''));
-        if (!res.ok) {
-            throw new Error('Network response was not ok');
+    const { data: serviceData, isLoading, isError, error: serviceError, refetch } = useQuery({
+        queryKey: ['homePage-Services'],
+        queryFn: async () => {
+            const res = await fetch('/api/home?homeId=' + (selectedHome?._id || ''));
+            if (!res.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return res.json();
         }
-        return res.json();
     });
 
 
@@ -38,6 +47,8 @@ export default function Dashboard() {
         if (selectedHome) {
             setHome(selectedHome);
             refetch();
+        } else if (selectedHome === null) {
+            route.replace('/homes');
         }
     }, [selectedHome]);
     useEffect(() => {

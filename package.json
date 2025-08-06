@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@tanstack/@tanstack/react-query": "^5.84.1",
     "chart.js": "^4.5.0",
     "flowbite": "^3.1.2",
     "mongodb": "^6.18.0",
@@ -16,8 +17,7 @@
     "next": "15.4.5",
     "react": "19.1.0",
     "react-chartjs-2": "^5.3.0",
-    "react-dom": "19.1.0",
-    "react-query": "^3.39.3"
+    "react-dom": "19.1.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

@@ -5,7 +5,7 @@ import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import Link from "next/link";
 import { useContext, useEffect, useState } from "react";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import Loading from "../loading";
 import { HomeContext } from "@/providers/homes.provider";
 import { useParams, useSearchParams } from "next/navigation";
@@ -18,13 +18,16 @@ export default function Consumption() {
 
     const params = useSearchParams();
 
-    const { data, error, isLoading, refetch } = useQuery('services', async () => {
-        const res = await fetch('/api/services?year=' + (selectedYear || '') + '&homeId=' + params.get('homeId') + '&type=' + selectedType);
-        if (!res.ok) {
-            throw new Error('Network response was not ok');
-        }
-        const data = await res.json();
-        return data;
+    const { data, error, isLoading, refetch } = useQuery({
+        queryKey: ['consumption', selectedType, selectedYear],
+        queryFn: async () => {
+            const res = await fetch('/api/services?year=' + (selectedYear || '') + '&homeId=' + params.get('homeId') + '&type=' + selectedType);
+            if (!res.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await res.json();
+            return data;
+        },
     });
 
 
@@ -106,7 +109,7 @@ export default function Consumption() {
             <div className="w-full flex-col gap-4 lg:flex hidden">
                 <Card className="bg-gray-500/5 border-gray-500/20 w-full flex flex-col items-center">
                     {!isLoading && data.data &&
-                        <BarChart average={data.average} labels={months} data={new Array(12).fill(0).map((_, i) => (data.data[Object.keys(data.data).find((key) => new Date(key).getMonth() === i) as any] || {difference: 0}).difference || 0)} color={types.find((f) => selectedType === f.value)?.colors.hex!} />
+                        <BarChart average={data.average} labels={months} data={new Array(12).fill(0).map((_, i) => (data.data[Object.keys(data.data).find((key) => new Date(key).getMonth() === i) as any] || { difference: 0 }).difference || 0)} color={types.find((f) => selectedType === f.value)?.colors.hex!} />
                     }
                 </Card>
             </div>

@@ -35,6 +35,8 @@ export function HomeProvider({ children }: { children: React.ReactNode }) {
         if (cookie) {
             const home = JSON.parse(cookie.split('=')[1]);
             setSelectedHome(home);
+        }else{
+            setSelectedHome(null);
         }
     }, [])
 
