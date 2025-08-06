@@ -2,24 +2,30 @@
 import clientPromise from '@/lib/mongodb'
 import { NextResponse } from 'next/server'
 
+const corsHeaders = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+}
+
+// GET - Fetch all homes
 export async function GET() {
     const client = await clientPromise;
     const db = client.db('lakasinfo');
     const houses = await db.collection('home').find().toArray();
 
-    return NextResponse.json(houses);
+    return NextResponse.json(houses, { headers: corsHeaders });
 }
 
-
+// POST - Create new home with services and payments
 export async function POST(req: Request) {
     try {
-        const client = await clientPromise
-        const db = client.db('lakasinfo')
-
-        const body = await req.json()
+        const client = await clientPromise;
+        const db = client.db('lakasinfo');
+        const body = await req.json();
 
         if (!body.name || body.services.length === 0) {
-            return NextResponse.json({ error: 'Név szükséges' }, { status: 400 })
+            return NextResponse.json({ error: 'Név szükséges' }, { status: 400, headers: corsHeaders });
         }
 
         const result = await db.collection('home').insertOne({
@@ -30,7 +36,7 @@ export async function POST(req: Request) {
             services: body.services.map((s: any) => s.value),
             payments: body.payments.map((p: any) => p.value.split('_')[0]),
             createdAt: new Date(),
-        })
+        });
 
         const services = {
             homeId: result.insertedId,
@@ -42,8 +48,8 @@ export async function POST(req: Request) {
             })),
             createdAt: new Date(),
             updatedAt: new Date()
-        }
-        const resultServices = await db.collection('services').insertOne(services);
+        };
+        await db.collection('services').insertOne(services);
 
         const payments = {
             homeId: result.insertedId,
@@ -55,12 +61,21 @@ export async function POST(req: Request) {
             })),
             createdAt: new Date(),
             updatedAt: new Date()
-        }
-        const resultPayments = await db.collection('payments').insertOne(payments);
+        };
+        await db.collection('payments').insertOne(payments);
 
-        return NextResponse.json({ success: true, id: result.insertedId })
+        return NextResponse.json({ success: true, id: result.insertedId }, { headers: corsHeaders });
+
     } catch (error) {
-        console.error('Hiba a POST során:', error)
-        return NextResponse.json({ error: 'Szerverhiba' }, { status: 500 })
+        console.error('Hiba a POST során:', error);
+        return NextResponse.json({ error: 'Szerverhiba' }, { status: 500, headers: corsHeaders });
     }
+}
+
+// OPTIONS - Handle CORS preflight
+export async function OPTIONS() {
+    return new Response(null, {
+        status: 204,
+        headers: corsHeaders,
+    });
 }
