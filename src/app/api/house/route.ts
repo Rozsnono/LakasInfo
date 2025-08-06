@@ -28,6 +28,7 @@ export async function POST(req: Request) {
             address: body.address || '',
             type: body.type || 'house',
             services: body.services.map((s: any) => s.value),
+            payments: body.payments.map((p: any) => p.value.split('_')[0]),
             createdAt: new Date(),
         })
 
@@ -43,6 +44,19 @@ export async function POST(req: Request) {
             updatedAt: new Date()
         }
         const resultServices = await db.collection('services').insertOne(services);
+
+        const payments = {
+            homeId: result.insertedId,
+            payments: body.payments.map((payment: { value: string, unit?: string }) => ({
+                name: payment.value.split('_')[0],
+                measurement: payment.unit || 'Ft',
+                data: {},
+                average: 0,
+            })),
+            createdAt: new Date(),
+            updatedAt: new Date()
+        }
+        const resultPayments = await db.collection('payments').insertOne(payments);
 
         return NextResponse.json({ success: true, id: result.insertedId })
     } catch (error) {

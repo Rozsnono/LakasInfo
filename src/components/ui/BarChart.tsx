@@ -14,7 +14,7 @@ import { Bar } from "react-chartjs-2";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend, Title);
 
-const BarChart = ({ color, labels, data, average }: { color: string, labels: string[], data: number[], average: number }) => {
+const BarChart = ({ color, labels, data, average, unit }: { color: string, labels: string[], data: number[], average: number, unit: string }) => {
     const chartData = {
         labels: labels,
         datasets: [
@@ -34,8 +34,6 @@ const BarChart = ({ color, labels, data, average }: { color: string, labels: str
             },
         ],
     };
-
-    console.log("BarChart Data:", chartData);
 
     const options = {
         responsive: true,
@@ -67,7 +65,7 @@ const BarChart = ({ color, labels, data, average }: { color: string, labels: str
                 beginAtZero: true,
                 title: {
                     display: true,
-                    text: "kWh",
+                    text: unit,
                     color: "#d1d5db",
                 },
             },

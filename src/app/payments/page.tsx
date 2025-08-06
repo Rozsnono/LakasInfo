@@ -9,9 +9,9 @@ import { useQuery } from "@tanstack/react-query";
 import Loading from "../loading";
 import { HomeContext } from "@/providers/homes.provider";
 import { useParams, useSearchParams } from "next/navigation";
-import { services } from "@/lib/services";
+import { payments } from "@/lib/payments";
 
-export default function Consumption() {
+export default function Payments() {
 
 
     const [selectedType, setSelectedType] = useState("electricity");
@@ -22,9 +22,9 @@ export default function Consumption() {
     const params = useSearchParams();
 
     const { data, error, isLoading, refetch } = useQuery({
-        queryKey: ['consumption', selectedType, selectedYear],
+        queryKey: ['payments', selectedType, selectedYear],
         queryFn: async () => {
-            const res = await fetch('/api/services?year=' + (selectedYear || '') + '&homeId=' + params.get('homeId') + '&type=' + selectedType);
+            const res = await fetch('/api/payments?year=' + (selectedYear || '') + '&homeId=' + params.get('homeId') + '&type=' + selectedType);
             if (!res.ok) {
                 throw new Error('Network response was not ok');
             }
@@ -59,14 +59,14 @@ export default function Consumption() {
     return (
         <div className="flex flex-col lg:max-w-7xl w-full gap-5">
             <div className="flex justify-between items-center flex-col lg:flex-row gap-4">
-                <h1 className="text-3xl font-bold">Fogyasztás</h1>
+                <h1 className="text-3xl font-bold">Kifizetés</h1>
 
-                <Link href={"/consumption/add"} className="w-fit">
-                    <Button className="w-fit border border-sky-400/80 bg-sky-500/50 hover:bg-sky-500/80 cursor-pointer flex items-center justify-center gap-2 px-8 py-2">
+                <Link href={"/payments/add"} className="w-fit">
+                    <Button className="w-fit border border-emerald-400/80 bg-emerald-500/50 hover:bg-emerald-500/80 cursor-pointer flex items-center justify-center gap-2 px-8 py-2">
                         <div className="flex gap-2 items-center text-white">
                             <Add size={24} className="" color="currentColor" strokeColor="none" strokeWidth={0} />
                             <span>
-                                Fogyasztás hozzáadása
+                                Kifizetés hozzáadása
                             </span>
                         </div>
                     </Button>
@@ -76,9 +76,8 @@ export default function Consumption() {
             <div className="w-full">
                 <Button className="w-full border border-gray-400/10 bg-gray-500/5 cursor-pointer flex items-center justify-center gap-2 p-1">
                     <div className="flex gap-2 items-center text-white w-full">
-
                         {
-                            services.filter((s) => selectedHome?.services.includes(s.value)).map((type) => (
+                            payments.filter((s) => selectedHome?.payments.includes(s.value.split('_')[0])).map((type) => (
                                 <div style={{
                                     backgroundColor: selectedType === type.value ? type.colors.background + '80' : 'transparent',
                                     borderColor: selectedType === type.value ? type.colors.border : 'transparent'
@@ -95,8 +94,8 @@ export default function Consumption() {
 
             <div className="w-full flex flex-col gap-4">
                 <Card className="bg-gray-500/5 border-gray-500/20 w-full flex flex-col items-center">
-                    <span className="text-gray-500 text-md">Éves átlag fogyasztás:</span>
-                    <span className="font-semibold text-xl">{data.yearly_average.toFixed(2)} {data.measurement}</span>
+                    <span className="text-gray-500 text-md">Éves átlag fizetés:</span>
+                    <span className="font-semibold text-xl">{data.yearly_average.toFixed(0)} {data.measurement}</span>
                 </Card>
             </div>
 
@@ -109,7 +108,7 @@ export default function Consumption() {
             <div className="w-full flex-col gap-4 lg:flex hidden">
                 <Card className="bg-gray-500/5 border-gray-500/20 w-full flex flex-col items-center">
                     {!isLoading && data.data &&
-                        <BarChart unit={data.measurement} average={data.average} labels={months} data={new Array(12).fill(0).map((_, i) => (data.data[Object.keys(data.data).find((key) => new Date(key).getMonth() === i) as any] || { difference: 0 }).difference || 0)} color={services.find((f) => selectedType === f.value)?.colors.background!} />
+                        <BarChart unit={data.measurement} average={data.average} labels={months} data={new Array(12).fill(0).map((_, i) => (data.data[Object.keys(data.data).find((key) => new Date(key).getMonth() === i) as any] || { difference: 0 }).difference || 0)} color={payments.find((f) => selectedType === f.value)?.colors.background!} />
                     }
                 </Card>
             </div>
@@ -126,7 +125,7 @@ export default function Consumption() {
                             Object.keys(data.data).sort((a, b) => new Date(b).getTime() - new Date(a).getTime()).map((month, index) => (
                                 <div key={index} className="w-full flex justify-between items-center px-4 py-4 bg-gray-600/30 rounded-lg">
                                     <div className="flex items-center gap-3">
-                                        <div style={{ backgroundColor: services.find((f) => selectedType === f.value)?.colors.background }} className={`w-6 h-8 rounded-lg duration-200`}></div>
+                                        <div style={{ backgroundColor: payments.find((f) => selectedType === f.value)?.colors.background }} className={`w-6 h-8 rounded-lg duration-200`}></div>
                                         <span className="text-gray-100 text-xl">{months[new Date(month).getMonth()]}</span>
                                         <div className="w-fit p-1 px-3 bg-gray-500/40 rounded-full">
                                             <span className="text-gray-200 lg:text-md text-xs">{data.data[month].difference} {data.measurement}</span>
