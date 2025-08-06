@@ -27,7 +27,7 @@ export async function POST(req: Request) {
             description: body.description || '',
             address: body.address || '',
             type: body.type || 'house',
-            services: body.services.map((s) => s.value),
+            services: body.services.map((s: any) => s.value),
             createdAt: new Date(),
         })
 

@@ -89,7 +89,7 @@ export default function Dashboard() {
         <main className="flex flex-col gap-8">
             <div className="flex flex-col gap-2 lg:items-start items-center">
                 <h1 className="text-3xl font-bold">Áttekintés</h1>
-                <Dropdown title={selectedHome?.name} items={data.data.map((item: any) => item.name)} onSelect={(item) => setSelectedHome!(data.data.find((i) => i.name === item) as any)} />
+                <Dropdown title={selectedHome?.name} items={data.data.map((item: any) => item.name)} onSelect={(item) => setSelectedHome!(data.data.find((i: any) => i.name === item) as any)} />
             </div>
 
             <div className="w-full flex gap-3 lg:flex-row flex-col">
@@ -158,7 +158,7 @@ export default function Dashboard() {
                     !isLoading && serviceData && serviceData.length > 0 &&
                     <Card className="bg-gray-500/5 border-gray-500/20 w-full flex flex-col items-center">
                         <h2 className="text-lg font-bold mb-4 text-white">Fogyasztási adatok</h2>
-                        <DonutChart data={serviceData.map((s) => s.average)} colors={services.filter((s) => serviceData.find((ss) => ss.name === s.value)).map((s) => s.colors.background) as any} labels={services.filter((s) => serviceData.find((ss) => ss.name === s.value)).map((s) => s.name)} />
+                        <DonutChart data={serviceData.map((s: any) => s.average)} colors={services.filter((s) => serviceData.find((ss: any) => ss.name === s.value)).map((s) => s.colors.background) as any} labels={services.filter((s) => serviceData.find((ss: any) => ss.name === s.value)).map((s) => s.name)} />
                     </Card>
                 }
             </div>
