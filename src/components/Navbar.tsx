@@ -21,7 +21,7 @@ export default function Navbar() {
         <nav className="fixed w-full border-b border-gray-100/30 bg-gray-950/10 backdrop-blur-md flex items-center justify-between px-12 py-6 z-50">
             <div className="text-lg font-semibold text-gray-900 dark:text-white">
                 <Link href="/" className="hover:underline hover:underline-offset-4 hover:decoration-2 lg:flex hidden ">
-                    LakasInfo
+                    LakásInfo
                 </Link>
 
                 <Link href="/" className="flex lg:hidden ">

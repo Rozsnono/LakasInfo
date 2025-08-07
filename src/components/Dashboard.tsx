@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/dist/client/link";
-import { Bar, Gas, Lightning, Wallet, Water } from "./icons/Icons";
+import { Bar, Download, Gas, Lightning, Wallet, Water } from "./icons/Icons";
 import Button from "./ui/Button";
 import Card from "./ui/Card";
 import DonutChart from "./ui/DonutChart";
@@ -199,6 +199,16 @@ export default function Dashboard() {
 
             </div>
 
+            <a href="/lakasinfo.apk" download>
+                <Button className="px-8 py-6 w-full border border-sky-400/80 bg-sky-500/50 hover:bg-sky-500/80 cursor-pointer flex items-center justify-center gap-2">
+                    <div className="flex gap-2 items-center text-white">
+                        <Download size={16} className="" color="currentColor" strokeColor="currentColor" strokeWidth={2} isStroke />
+                        <span>
+                            Alkalmazás letöltése
+                        </span>
+                    </div>
+                </Button>
+            </a>
         </main>
     )
 }
